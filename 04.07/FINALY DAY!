@@ -1,0 +1,270 @@
+# coding: utf8
+import pygame
+import random
+import time
+def load_menu():
+    items = [(160, 140, 'Game', (0, 0, 0), (255, 0, 0), 0),(166,210, 'Quit', (0,0,0),(255,0,0),1)]
+    # создать вторую кнопку]
+
+    pygame.mouse.set_visible(True)
+
+    done = False
+    item = 0
+    while not done:
+        # закрасить фон полностью (screen и score)
+        screen.fill([182, 255, 254])
+        score.fill([182, 255, 254])
+
+        for e in pygame.event.get():
+                if e.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+                if e.type == pygame.MOUSEBUTTONDOWN and e.button == 1:
+                    if item == 0:
+                        done = True
+                    elif item == 1:
+                        pygame.quit()
+                        sys.exit()
+
+        pointer = pygame.mouse.get_pos()
+        for i in items:
+            if pointer[0]>i[0] and pointer[0]<i[0]+155 and pointer[1]>i[1] and pointer[1]<i[1]+50:
+                item = i[5]
+
+        for i in items:
+            if item == i[5]:
+                screen.blit(myFont.render(i[2], 1, i[4]), [i[0], i[1]-40])
+            else:
+                screen.blit(myFont.render(i[2], 1, i[3]), [i[0], i[1]-40])
+        # отобразить score и screen на window
+        # обновить дисплей
+        window.blit(screen, [0, 40])
+        window.blit(score, [0,0])
+        pygame.display.flip()
+    
+        
+
+
+
+
+count=0
+damage=int(0)
+time_out=False
+x_user=int (input())
+y_user=int (input())
+pygame.font.init()
+myFont=pygame.font.Font(None,30)
+#myFont=pygame.font.Font(
+score = pygame.Surface([400,40])
+enemy_new=True
+
+
+# задааем размер окна, создаем окно размера size
+size = [400, 400]
+window = pygame.display.set_mode(size)
+# задаем имя - в кавычках, т.к. текст - это строка
+pygame.display.set_caption('My second file')
+
+screen = pygame.Surface(size)
+
+
+class Sprite:
+    def __init__(self, xpos, ypos, filename):
+        self.x = xpos
+        self.y = ypos
+        self.bitmap = pygame.image.load(filename)
+    def render(self):
+        screen.blit(self.bitmap,(self.x, self.y))
+
+
+def Intersect(s1_x, s2_x, s1_y, s2_y):
+    if ((s1_x>s2_x-40) and (s1_x<s2_x+40) and (s1_y>s2_y-40) and (s1_y<s2_y+40)):
+        return 1
+    else:
+        return 0
+
+# создание персонажей
+# герой
+
+# переменные-"переключатели" движения для героя
+hero = Sprite(200, 200, 'img1.png')
+hero.right = True
+hero.up = True
+# враг
+enemy = Sprite(200, 45, 'img2.png')
+# переменные-"переключатели" движения для врага
+enemy.right = True
+bomba = Sprite(-200,-200, 'img3.png')
+bomba.up=True
+bomba.down=True
+# Сердца
+health = Sprite(120,5, 'img4.png')
+health2 = Sprite(165,5, 'img5.png')
+health3 = Sprite(210,5, 'img6.png')
+# if e.type==pygame.KEYDOWN:
+#     if e.key==pygame.K_SPACE:
+#             bomba.x=hero.x
+#             bomba.y=hero.y
+#             bomba.up=True
+#             bomba.y-=1
+# if enemy.x<360:
+#     if enemy.right==True:
+#         enemy.x+=1
+# else:
+#     enemy.right==False
+# if enemy.x>0:
+#     if enemy.right==False:
+#         enemy.x-=1
+# else:
+#     enemy.right==True
+
+
+
+bad_screen = False
+count = 0
+running = True
+
+enemy_new = True
+
+runnig=True
+pygame.key.set_repeat(1,1)
+x=time.time()
+load_menu()
+while running:
+    y=time.time()
+    
+    
+    # обработка событий
+    for e in pygame.event.get():
+        if e.type == pygame.QUIT:
+            running  = False
+    
+        if e.type==pygame.KEYDOWN:
+            if e.key==pygame.K_LEFT and  hero.x > 0:
+                hero.x-=0.4
+            if e.key==pygame.K_RIGHT and  hero.x < 400-24:
+                hero.x+=0.4
+            if e.key==pygame.K_UP and  hero.y > 400-200:
+                hero.y-=0.4
+            if e.key==pygame.K_DOWN and  hero.y < 400-24:
+                hero.y+=0.4
+            #if e.key==pygame.K_Q:
+                #quit()
+        #if e.key==pygame.K_SPACE:
+#             bomba.x=enemy.x
+#             bomba.y=enemy.y
+#             bomba.up=True
+
+
+            
+            
+            
+        
+
+    # задайте фоновый цвет
+    screen.fill([0, 0, 0])
+    score.fill([255,255,255])
+    text = myFont.render("Try To Dodge! ", 1, [0,0,0])
+    gameover = myFont.render("GAME OVER", 2, [255,0,0])
+
+    # движение персонажей - аналогично тому,
+    # что делали с квадратом, но теперь по вертикали
+    '''
+    if hero.up == True:
+        hero.y -= 10
+        if hero.y < 0:
+            hero.up = False
+    else:
+        hero.y += 10
+        if hero.y > 360:
+            hero.up = True
+    '''
+    if enemy.x<360:
+        if enemy.right==True:
+            enemy.x+=35
+    else:
+        enemy.right=False
+    if enemy.right==False:
+        if enemy.x>0:
+            enemy.x-=35
+        
+        else:
+            enemy.right=True
+    if y-x > 3:
+        bomba.x=enemy.x 
+        bomba.y=enemy.y + 40
+        bomba.down=True
+        print(2)
+        x=time.time()
+        
+    
+         #x=time.time()
+#     if enemy.x>360:
+#         if enemy.right==False:
+#             enemy.x-=1
+#     else:
+#         enemy.right==True
+           
+    '''
+    if enemy.up == True:
+        enemy.y -= 10
+        if enemy.y < 0:
+            enemy.up = False
+            enemy_new = True
+    else:
+        enemy.y += 10
+        if enemy.y > high:
+            enemy.up = True
+    '''
+            
+    if bomba.down==True:
+        bomba.y+=65
+    if bomba.y>410:
+        bomba.down=False
+
+    # столкновение персонажей
+    if Intersect(bomba.x, hero.x, bomba.y, hero.y):
+        bomba.x=-400
+        bomba.y=-400
+        damage+=1
+    if damage==1:
+        health3.x=-400
+        health3.y=-400
+    if damage==2:
+        health2.x=-400
+        health2.y=-400
+    if damage==3:
+        health1.x=-400
+        health1.y=-400
+        quit()
+
+        
+#     if damage==5:
+#         quit()
+#         print('/n Game Over')
+#         print('Score', count)
+#         break
+        
+
+    # отображение персонажей
+    hero.render()
+    enemy.render()
+    bomba.render()
+    health.render()
+    health2.render()
+    health3.render()
+    
+
+    # отображение окна
+    score.blit(text, [10,10])
+    window.blit(screen, [0, 40])
+    pygame.display.flip()
+    pygame.time.delay(50)
+    window.blit(score, [0, 0])
+
+    
+
+
+pygame.quit()
+
